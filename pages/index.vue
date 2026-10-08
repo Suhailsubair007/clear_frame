@@ -87,14 +87,8 @@ onBeforeUnmount(() => {
     <p class="sr-only" role="status" aria-live="polite">{{ statusMessage }}</p>
 
     <section class="text-center" :class="compactHero ? 'pt-10 pb-8' : 'pt-12 pb-10 sm:pt-20 sm:pb-14'">
-      <p
-        class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3.5 py-1.5 text-xs font-medium sm:text-sm text-primary-700 dark:text-primary-300"
-      >
-        <UIcon name="i-lucide-lock" class="size-3.5" aria-hidden="true" />
-        Processed locally. Your photos never leave your device.
-      </p>
       <h1
-        class="mx-auto mt-6 max-w-3xl font-display leading-[1.05] text-highlighted transition-all"
+        class="mx-auto max-w-3xl font-display leading-[1.05] text-highlighted transition-all"
         :class="compactHero ? 'text-4xl sm:text-5xl' : 'text-[2.5rem] sm:text-6xl lg:text-7xl'"
       >
         <span class="block">Your photos.</span>
