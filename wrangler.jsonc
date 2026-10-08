@@ -1,0 +1,14 @@
+// Cloudflare Workers deployment: a static-assets-only Worker serving dist/ (no server code).
+// `npx wrangler deploy` runs the build below first, so Workers Builds needs no extra build command.
+{
+  "name": "clear-frame",
+  "compatibility_date": "2025-10-01",
+  "build": {
+    "command": "npm run build:cloudflare",
+  },
+  "assets": {
+    "directory": "./dist",
+    // Unknown URLs get the generated 404 page with a 404 status.
+    "not_found_handling": "404-page",
+  },
+}

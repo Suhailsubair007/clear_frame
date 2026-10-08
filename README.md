@@ -137,27 +137,21 @@ npm run generate                 # fully static output in .output/public
 
 ## Deployment
 
-### Cloudflare Pages (free, recommended)
+### Cloudflare (free)
 
 The site is fully static, so it runs on Cloudflare's free plan with no server code. `npm run build:cloudflare` writes the site to `dist/`, including a `_headers` file with the security headers (Content Security Policy etc.).
 
-**Option A — connect the GitHub repository** (deploys automatically on every push):
+**Cloudflare Workers** (configured in `wrangler.jsonc`):
 
-1. Cloudflare dashboard → **Workers & Pages** → **Create** → **Pages** → **Connect to Git**, and pick this repository.
-2. Build settings:
-   - Framework preset: **None**
-   - Build command: `npm run build:cloudflare`
-   - Build output directory: `dist`
-3. **Save and Deploy.** Node 22 is picked up from `.node-version`.
+1. Cloudflare dashboard → **Workers & Pages** → **Create** → **Import a repository**, and pick this repository.
+2. Keep the deploy command `npx wrangler deploy`. It runs `npm run build:cloudflare` itself, so the build command can stay empty.
+3. The Worker's name must match `name` in `wrangler.jsonc` (`clear-frame`); change one of them if they differ.
 
-**Option B — deploy from your computer:**
+Or deploy from your computer: `npx wrangler@4 login` once, then `npm run deploy:cloudflare`.
 
-```bash
-npx wrangler@4 login          # once; opens the browser
-npm run deploy:cloudflare     # builds and uploads to the "clearframe" Pages project
-```
+**Cloudflare Pages** (alternative): **Workers & Pages** → **Create** → **Pages** → **Connect to Git**, with build command `npm run build:cloudflare` and output directory `dist`.
 
-Leave Cloudflare **Web Analytics** and **Rocket Loader** off for this site: they inject third-party scripts, which the privacy policy and Content Security Policy don't allow.
+Node 22 is picked up from `.node-version`. Leave Cloudflare **Web Analytics** and **Rocket Loader** off for this site: they inject third-party scripts, which the privacy policy and Content Security Policy don't allow.
 
 ### Other hosts
 
