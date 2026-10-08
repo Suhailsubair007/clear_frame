@@ -3,11 +3,11 @@ import type { CleanedImage } from '~/composables/useImageCleaner'
 import type { SelectedImage } from '~/types/image'
 import { formatBytes } from '~/utils/file'
 
+/** Result panel. Shown in the same column as the metadata summary so the layout doesn't jump. */
 const props = defineProps<{ image: SelectedImage; result: CleanedImage; canShare: boolean }>()
 const emit = defineEmits<{ download: []; share: []; reset: [] }>()
 
-const notRemoved = computed(() => props.result.outcomes.filter((outcome) => outcome.outcome === 'not-removed'))
-const fullyClean = computed(() => notRemoved.value.length === 0)
+const fullyClean = computed(() => props.result.outcomes.every((outcome) => outcome.outcome !== 'not-removed'))
 
 const stats = computed(() => [
   { label: 'Original size', value: formatBytes(props.image.size) },
@@ -26,30 +26,31 @@ const summary = computed(() => {
 </script>
 
 <template>
-  <div class="card p-5 sm:p-8">
-    <div class="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-      <div class="flex items-start gap-4">
-        <span
-          class="flex size-12 shrink-0 items-center justify-center rounded-2xl"
-          :class="fullyClean ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning'"
-        >
-          <UIcon :name="fullyClean ? 'i-lucide-shield-check' : 'i-lucide-shield-alert'" class="size-6" />
-        </span>
-        <div>
-          <h2 class="font-display text-2xl leading-tight text-highlighted sm:text-3xl" tabindex="-1" data-autofocus>
-            {{ fullyClean ? 'Your image is clean and ready to share.' : 'Your image was cleaned, with exceptions.' }}
-          </h2>
-          <p class="mt-2 text-muted">{{ summary }}</p>
-          <p class="mt-1 text-sm text-muted">
-            Saved as <span class="font-medium break-all text-highlighted">{{ result.fileName }}</span>
-          </p>
-        </div>
+  <div class="space-y-6">
+    <div class="flex items-start gap-3.5">
+      <span
+        class="flex size-11 shrink-0 items-center justify-center rounded-xl"
+        :class="fullyClean ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning'"
+      >
+        <UIcon :name="fullyClean ? 'i-lucide-shield-check' : 'i-lucide-shield-alert'" class="size-6" />
+      </span>
+      <div class="min-w-0">
+        <h2 class="font-display text-2xl leading-tight text-highlighted" tabindex="-1" data-autofocus="done">
+          {{ fullyClean ? 'Your image is clean and ready to share.' : 'Your image was cleaned, with exceptions.' }}
+        </h2>
+        <p class="mt-1.5 text-sm text-muted">{{ summary }}</p>
+        <p class="mt-1 text-sm text-muted">
+          Saved as <span class="font-medium break-all text-highlighted">{{ result.fileName }}</span>
+        </p>
       </div>
-      <div class="flex flex-col gap-2 sm:flex-row lg:flex-col lg:items-stretch">
-        <UButton size="xl" icon="i-lucide-download" label="Download clean image" block @click="emit('download')" />
+    </div>
+
+    <div class="grid gap-2">
+      <UButton size="xl" icon="i-lucide-download" label="Download clean image" block @click="emit('download')" />
+      <div class="grid gap-2" :class="{ 'sm:grid-cols-2': canShare }">
         <UButton
           v-if="canShare"
-          size="xl"
+          size="lg"
           color="neutral"
           variant="subtle"
           icon="i-lucide-share"
@@ -58,9 +59,9 @@ const summary = computed(() => {
           @click="emit('share')"
         />
         <UButton
-          size="xl"
+          size="lg"
           color="neutral"
-          variant="ghost"
+          variant="outline"
           icon="i-lucide-rotate-ccw"
           label="Clean another image"
           block
@@ -69,27 +70,14 @@ const summary = computed(() => {
       </div>
     </div>
 
-    <div class="mt-8 grid grid-cols-2 gap-3 sm:gap-5">
-      <figure>
-        <figcaption class="mb-2 text-xs font-semibold tracking-wider text-muted uppercase">Before</figcaption>
-        <ImagePreview :src="image.objectUrl" :alt="`Original: ${image.name}`" compact />
-      </figure>
-      <figure>
-        <figcaption class="mb-2 text-xs font-semibold tracking-wider text-primary uppercase">After</figcaption>
-        <ImagePreview :src="result.objectUrl" :alt="`Cleaned: ${result.fileName}`" compact />
-      </figure>
-    </div>
-
-    <dl
-      class="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-default bg-(--ui-border) sm:grid-cols-4"
-    >
+    <dl class="grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-default bg-(--ui-border)">
       <div v-for="stat in stats" :key="stat.label" class="bg-(--cf-card) px-4 py-3">
         <dt class="text-xs text-muted">{{ stat.label }}</dt>
         <dd class="mt-0.5 text-lg font-semibold text-highlighted tabular-nums">{{ stat.value }}</dd>
       </div>
     </dl>
 
-    <section v-if="result.outcomes.length" class="mt-8" aria-labelledby="outcome-heading">
+    <section v-if="result.outcomes.length" aria-labelledby="outcome-heading">
       <h3 id="outcome-heading" class="text-base font-semibold text-highlighted">Before and after</h3>
       <div class="mt-3 overflow-hidden rounded-xl border border-default">
         <table class="w-full text-sm">
@@ -114,7 +102,7 @@ const summary = computed(() => {
       </div>
     </section>
 
-    <aside class="mt-6 rounded-xl bg-muted p-4 text-sm" aria-labelledby="limits-heading">
+    <aside class="rounded-xl bg-muted p-4 text-sm" aria-labelledby="limits-heading">
       <p id="limits-heading" class="flex items-center gap-2 font-semibold text-highlighted">
         <UIcon name="i-lucide-info" class="size-4 text-muted" aria-hidden="true" />
         What metadata removal can't do

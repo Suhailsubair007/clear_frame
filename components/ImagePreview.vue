@@ -1,5 +1,6 @@
 <script setup lang="ts">
-defineProps<{ src: string; alt: string; compact?: boolean }>()
+/** `width`/`height` let the browser reserve the right space before the image decodes. */
+defineProps<{ src: string; alt: string; width: number; height: number }>()
 </script>
 
 <template>
@@ -7,9 +8,10 @@ defineProps<{ src: string; alt: string; compact?: boolean }>()
     <img
       :src="src"
       :alt="alt"
+      :width="width"
+      :height="height"
       decoding="async"
-      class="block h-auto w-auto max-w-full object-contain"
-      :class="compact ? 'max-h-56 sm:max-h-64' : 'max-h-[min(55vh,30rem)]'"
+      class="block h-auto max-h-[min(55vh,30rem)] w-auto max-w-full object-contain"
     />
   </div>
 </template>

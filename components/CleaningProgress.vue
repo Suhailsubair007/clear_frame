@@ -1,49 +1,34 @@
 <script setup lang="ts">
 import { CLEANING_STEPS, type CleaningStep } from '~/utils/cleaner'
 
-const props = defineProps<{ current: CleaningStep | null }>()
+/**
+ * A fixed-height step indicator. It is always rendered (hidden when idle) so
+ * starting a clean never pushes content around.
+ */
+const props = defineProps<{ current: CleaningStep | null; active: boolean }>()
 
 const currentIndex = computed(() => CLEANING_STEPS.findIndex((step) => step.id === props.current))
-
-function stateOf(index: number): 'done' | 'active' | 'pending' {
-  if (index < currentIndex.value || props.current === 'done') return 'done'
-  return index === currentIndex.value ? 'active' : 'pending'
-}
+const currentLabel = computed(() => CLEANING_STEPS[currentIndex.value]?.label ?? '')
 </script>
 
 <template>
-  <ol aria-label="Cleaning progress" class="space-y-2.5">
-    <li
-      v-for="(step, index) in CLEANING_STEPS"
-      :key="step.id"
-      class="flex items-center gap-3 text-sm"
-      :aria-current="stateOf(index) === 'active' ? 'step' : undefined"
-    >
-      <span
-        class="flex size-6 items-center justify-center rounded-full"
-        :class="{
-          'bg-primary text-inverted': stateOf(index) === 'done',
-          'bg-primary/10 text-primary': stateOf(index) === 'active',
-          'bg-elevated text-dimmed': stateOf(index) === 'pending',
-        }"
+  <div :class="{ invisible: !active }" :aria-hidden="!active">
+    <ol class="flex gap-1.5" aria-label="Cleaning progress">
+      <li
+        v-for="(step, index) in CLEANING_STEPS"
+        :key="step.id"
+        class="h-1.5 flex-1 rounded-full transition-colors duration-300"
+        :class="index <= currentIndex ? 'bg-primary' : 'bg-elevated'"
+        :aria-current="index === currentIndex ? 'step' : undefined"
       >
-        <UIcon v-if="stateOf(index) === 'done'" name="i-lucide-check" class="size-3.5" aria-hidden="true" />
-        <UIcon
-          v-else-if="stateOf(index) === 'active'"
-          name="i-lucide-loader-circle"
-          class="size-3.5 animate-spin"
-          aria-hidden="true"
-        />
-        <span v-else class="size-1.5 rounded-full bg-current" aria-hidden="true" />
-      </span>
-      <span :class="stateOf(index) === 'pending' ? 'text-muted' : 'font-medium text-highlighted'">
-        {{ step.label }}
-        <span class="sr-only"
-          >({{
-            stateOf(index) === 'done' ? 'complete' : stateOf(index) === 'active' ? 'in progress' : 'pending'
-          }})</span
-        >
-      </span>
-    </li>
-  </ol>
+        <span class="sr-only">
+          {{ step.label }}
+          {{ index < currentIndex ? '(complete)' : index === currentIndex ? '(in progress)' : '(pending)' }}
+        </span>
+      </li>
+    </ol>
+    <p class="mt-2 text-center text-xs text-muted" aria-hidden="true">
+      Step {{ Math.max(currentIndex, 0) + 1 }} of {{ CLEANING_STEPS.length }} · {{ currentLabel }}
+    </p>
+  </div>
 </template>

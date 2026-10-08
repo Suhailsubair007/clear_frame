@@ -21,23 +21,40 @@ const toast = useToast()
 
 const workspace = ref<HTMLElement | null>(null)
 const dropzone = ref<{ focus: () => void } | null>(null)
+const showOriginal = ref(false)
 
-const hasImage = computed(() => phase.value === 'ready' || phase.value === 'cleaning')
-const compactHero = computed(() => hasImage.value || phase.value === 'done')
+/** The two-column workspace stays mounted from review to result, so nothing jumps between steps. */
+const inWorkspace = computed(() => phase.value === 'ready' || phase.value === 'cleaning' || phase.value === 'done')
+const isDone = computed(() => phase.value === 'done' && result.value !== null)
 const aiFound = computed(() => analysis.value?.categories.some((c) => c.id === 'ai' && c.status === 'found') ?? false)
 const canShare = computed(() => (result.value ? canShareFile(result.value.blob, result.value.fileName) : false))
 const stepLabel = computed(() => CLEANING_STEPS.find((step) => step.id === currentStep.value)?.label ?? 'Cleaning…')
+const previewSrc = computed(() =>
+  isDone.value && result.value && !showOriginal.value ? result.value.objectUrl : (image.value?.objectUrl ?? ''),
+)
 
-/** Move focus and scroll to the new state so keyboard and screen-reader users follow along. */
+/** Sticky header height plus breathing room; anything above this line is hidden behind the header. */
+const HEADER_OFFSET = 80
+
+/**
+ * Moves focus to the new state for keyboard and screen-reader users. The page only
+ * scrolls when the new heading is hidden above the viewport (content collapsed above
+ * the reader), and never animates. On small screens the sticky bar shows the next action.
+ */
 watch(phase, async (next, previous) => {
+  if (next === 'done') showOriginal.value = false
   await nextTick()
-  if (next === 'ready' || next === 'done' || next === 'error') {
-    const smooth = !window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    workspace.value?.scrollIntoView({ block: 'start', behavior: smooth ? 'smooth' : 'auto' })
-    workspace.value?.querySelector<HTMLElement>('[data-autofocus]')?.focus({ preventScroll: true })
-  } else if (next === 'idle' && previous !== 'loading') {
-    dropzone.value?.focus()
+  if (next === 'idle') {
+    if (previous !== 'loading') dropzone.value?.focus()
+    return
   }
+  const target = workspace.value?.querySelector<HTMLElement>(`[data-autofocus="${next}"]`)
+  if (!target) return
+  const top = (target.closest('.card') ?? target).getBoundingClientRect().top
+  if (top < HEADER_OFFSET) {
+    window.scrollTo({ top: window.scrollY + top - HEADER_OFFSET, behavior: 'instant' })
+  }
+  target.focus({ preventScroll: true })
 })
 
 function notify(caught: unknown) {
@@ -83,18 +100,15 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="mx-auto max-w-6xl px-4 sm:px-6" :class="{ 'pb-24 lg:pb-0': hasImage }">
+  <div class="mx-auto max-w-6xl px-4 sm:px-6" :class="{ 'pb-24 lg:pb-0': inWorkspace }">
     <p class="sr-only" role="status" aria-live="polite">{{ statusMessage }}</p>
 
-    <section class="text-center" :class="compactHero ? 'pt-10 pb-8' : 'pt-12 pb-10 sm:pt-20 sm:pb-14'">
-      <h1
-        class="mx-auto max-w-3xl font-display leading-[1.05] text-highlighted transition-all"
-        :class="compactHero ? 'text-4xl sm:text-5xl' : 'text-[2.5rem] sm:text-6xl lg:text-7xl'"
-      >
+    <section class="pt-12 pb-10 text-center sm:pt-20 sm:pb-14">
+      <h1 class="mx-auto max-w-3xl font-display text-[2.5rem] leading-[1.05] text-highlighted sm:text-6xl lg:text-7xl">
         <span class="block">Your photos.</span>
         <span class="block text-primary-600 dark:text-primary-400">Your privacy.</span>
       </h1>
-      <p v-if="!compactHero" class="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-muted">
+      <p class="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-muted">
         Clean unwanted image metadata before you share. Process your photos directly on your device with no uploads or
         cloud storage.
       </p>
@@ -110,21 +124,18 @@ onBeforeUnmount(() => {
 
       <ErrorState v-else-if="phase === 'error' && error" :error="error" @retry="reset" />
 
-      <LazyCleaningResult
-        v-else-if="phase === 'done' && image && result"
-        :image="image"
-        :result="result"
-        :can-share="canShare"
-        @download="onDownload"
-        @share="onShare"
-        @reset="reset"
-      />
-
-      <div v-else-if="image && analysis" class="grid gap-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:items-start">
+      <div
+        v-else-if="inWorkspace && image && analysis"
+        class="grid gap-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:items-start"
+      >
         <div class="card space-y-6 p-4 sm:p-6 lg:sticky lg:top-24">
-          <div class="flex items-center justify-between gap-3">
-            <h2 class="text-lg font-semibold text-highlighted" tabindex="-1" data-autofocus>Review your image</h2>
+          <div class="flex min-h-9 items-center justify-between gap-3">
+            <h2 class="text-lg font-semibold text-highlighted" tabindex="-1" data-autofocus="ready">
+              {{ isDone ? 'Preview' : 'Review your image' }}
+            </h2>
+            <PreviewToggle v-if="isDone" v-model="showOriginal" />
             <UButton
+              v-else
               variant="ghost"
               color="neutral"
               size="sm"
@@ -134,32 +145,64 @@ onBeforeUnmount(() => {
               @click="reset"
             />
           </div>
-          <ImagePreview :src="image.objectUrl" :alt="`Preview of ${image.name}`" />
+          <ImagePreview
+            :src="previewSrc"
+            :alt="isDone && !showOriginal ? `Cleaned: ${result?.fileName}` : `Preview of ${image.name}`"
+            :width="image.width"
+            :height="image.height"
+          />
           <ImageInfo :image="image" />
         </div>
 
-        <div class="card space-y-5 p-4 sm:p-6">
-          <MetadataSummary :categories="analysis.categories" />
-          <ProvenanceNotice v-if="aiFound" :provenance="analysis.provenance" />
-          <p v-if="analysis.parseFailed" class="text-sm text-muted">
-            Some details couldn’t be read, but ClearFrame can still remove the metadata blocks it found.
-          </p>
-          <LazyMetadataDetails :groups="analysis.groups" />
-          <QualitySelector v-model="mode" :available="availableModes" :disabled="phase === 'cleaning'" />
-          <div class="hidden lg:block">
-            <LazyCleaningProgress v-if="phase === 'cleaning'" :current="currentStep" />
-            <UButton v-else size="xl" block icon="i-lucide-eraser" label="Clean image" @click="clean" />
+        <div class="card p-4 sm:p-6">
+          <CleaningResult
+            v-if="isDone && result"
+            :image="image"
+            :result="result"
+            :can-share="canShare"
+            @download="onDownload"
+            @share="onShare"
+            @reset="reset"
+          />
+          <div v-else class="space-y-5">
+            <MetadataSummary :categories="analysis.categories" />
+            <ProvenanceNotice v-if="aiFound" :provenance="analysis.provenance" />
+            <p v-if="analysis.parseFailed" class="text-sm text-muted">
+              Some details couldn’t be read, but ClearFrame can still remove the metadata blocks it found.
+            </p>
+            <MetadataDetails :groups="analysis.groups" />
+            <QualitySelector v-model="mode" :available="availableModes" :disabled="phase === 'cleaning'" />
+            <div class="hidden space-y-3 lg:block">
+              <UButton
+                size="xl"
+                block
+                icon="i-lucide-eraser"
+                :loading="phase === 'cleaning'"
+                :label="phase === 'cleaning' ? 'Cleaning…' : 'Clean image'"
+                @click="clean"
+              />
+              <CleaningProgress :current="currentStep" :active="phase === 'cleaning'" />
+            </div>
+            <PrivacyNotice />
           </div>
-          <PrivacyNotice />
         </div>
       </div>
     </div>
 
     <div
-      v-if="hasImage"
+      v-if="inWorkspace"
       class="fixed inset-x-0 bottom-0 z-20 border-t border-default bg-(--cf-page)/90 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur-md lg:hidden"
     >
       <UButton
+        v-if="isDone"
+        size="xl"
+        block
+        icon="i-lucide-download"
+        label="Download clean image"
+        @click="onDownload"
+      />
+      <UButton
+        v-else
         size="xl"
         block
         icon="i-lucide-eraser"

@@ -2,8 +2,11 @@
 @import '@nuxt/ui';
 
 @theme static {
-  --font-sans: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-display: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* The "Fallback: Arial" faces are metric-matched by @nuxt/fonts so text doesn't reflow when fonts load. */
+  --font-sans: 'Geist', 'Geist Fallback: Arial', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display:
+    'Plus Jakarta Sans', 'Plus Jakarta Sans Fallback: Arial', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
+    sans-serif;
 }
 
 @layer base {

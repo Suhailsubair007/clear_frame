@@ -46,7 +46,7 @@ test('cleans a photo end to end without sending it anywhere', async ({ page, bas
   // Download
   const [download] = await Promise.all([
     page.waitForEvent('download'),
-    page.getByRole('button', { name: 'Download clean image' }).click(),
+    page.getByRole('button', { name: 'Download clean image' }).first().click(),
   ])
   expect(download.suggestedFilename()).toBe('IMG_1234-clean.jpg')
   const cleaned = new Uint8Array(await readFile((await download.path()) as string))
