@@ -2,11 +2,11 @@
   <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
     <rect width="32" height="32" rx="9" class="fill-primary" />
     <path
-      d="M9.5 13.5v-2.5a1.5 1.5 0 0 1 1.5-1.5h2.5M18.5 9.5H21a1.5 1.5 0 0 1 1.5 1.5v2.5M22.5 18.5V21a1.5 1.5 0 0 1-1.5 1.5h-2.5M13.5 22.5H11A1.5 1.5 0 0 1 9.5 21v-2.5"
+      d="M15.55 22.14A4.75 4.75 0 1 1 12.5 13.75H24M20 23.25V12a3 3 0 0 1 3-3h1"
       stroke="white"
-      stroke-width="2"
+      stroke-width="2.75"
       stroke-linecap="round"
+      stroke-linejoin="round"
     />
-    <circle cx="16" cy="16" r="2.5" fill="white" />
   </svg>
 </template>
