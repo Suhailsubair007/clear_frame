@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ACCEPT_ATTRIBUTE } from '~/utils/validation'
 
-const props = defineProps<{ loading?: boolean }>()
+/** `introDelay` (ms) staggers the entrance on first page load; later mounts appear immediately. */
+const props = withDefaults(defineProps<{ loading?: boolean; introDelay?: number }>(), { introDelay: 0 })
 const emit = defineEmits<{ select: [file: File] }>()
 
 const inputId = useId()
@@ -50,18 +51,23 @@ defineExpose({ focus: () => input.value?.focus() })
 
 <template>
   <div
-    class="card group relative transition-colors has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-primary"
-    :class="dragging ? 'border-primary bg-primary/5' : 'hover:border-accented'"
+    class="card group motion-fade-up motion-scan relative overflow-hidden transition-colors has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-primary"
+    :class="[dragging ? 'border-primary bg-primary/5' : 'hover:border-accented', { 'is-scanning': loading }]"
+    :style="{ '--delay': `${introDelay}ms`, '--scan-delay': `${introDelay + 700}ms` }"
     @dragenter="onDragEnter"
     @dragover="onDragOver"
     @dragleave="onDragLeave"
     @drop="onDrop"
   >
-    <span
-      class="viewfinder"
-      :class="dragging ? 'inset-5! [--vf-color:var(--ui-primary)]' : 'group-hover:[--vf-color:var(--ui-text-dimmed)]'"
-      aria-hidden="true"
-    />
+    <span class="motion-lock pointer-events-none absolute inset-0" :style="{ '--delay': `${introDelay + 250}ms` }">
+      <span
+        class="viewfinder"
+        :class="
+          dragging ? 'scale-[0.97] [--vf-color:var(--ui-primary)]' : 'group-hover:[--vf-color:var(--ui-text-dimmed)]'
+        "
+        aria-hidden="true"
+      />
+    </span>
     <label
       :for="inputId"
       class="relative flex min-h-80 cursor-pointer flex-col items-center justify-center gap-3 px-6 py-14 text-center sm:min-h-96"

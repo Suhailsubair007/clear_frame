@@ -6,12 +6,13 @@ defineProps<{ src: string; alt: string; width: number; height: number }>()
 <template>
   <div class="checkerboard flex items-center justify-center overflow-hidden rounded-2xl border border-default">
     <img
+      :key="src"
       :src="src"
       :alt="alt"
       :width="width"
       :height="height"
       decoding="async"
-      class="block h-auto max-h-[min(55vh,30rem)] w-auto max-w-full object-contain"
+      class="motion-fade-in block h-auto max-h-[min(55vh,30rem)] w-auto max-w-full object-contain"
     />
   </div>
 </template>

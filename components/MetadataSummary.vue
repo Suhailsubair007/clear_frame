@@ -21,7 +21,12 @@ const foundCount = computed(() => props.categories.filter((category) => category
       </p>
     </div>
     <ul role="list" class="mt-3 divide-y divide-default overflow-hidden rounded-xl border border-default">
-      <li v-for="category in categories" :key="category.id" class="flex items-center justify-between gap-3 px-4 py-3">
+      <li
+        v-for="(category, index) in categories"
+        :key="category.id"
+        class="motion-fade-up flex items-center justify-between gap-3 px-4 py-3"
+        :style="{ '--delay': `${100 + index * 35}ms` }"
+      >
         <div class="min-w-0">
           <p class="flex flex-wrap items-center gap-x-2 text-sm font-medium text-highlighted">
             {{ category.label }}

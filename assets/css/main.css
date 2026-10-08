@@ -72,7 +72,7 @@
       linear-gradient(var(--vf-color) 0 0) bottom right / var(--vf-size) var(--vf-weight),
       linear-gradient(var(--vf-color) 0 0) bottom right / var(--vf-weight) var(--vf-size);
     background-repeat: no-repeat;
-    transition: inset 200ms ease;
+    transition: transform 300ms cubic-bezier(0.2, 0.7, 0.2, 1);
   }
 
   .checkerboard {
@@ -86,40 +86,178 @@
     background-size: 16px 16px;
   }
 
-  .article h2 {
-    margin-top: 2.5rem;
-    font-family: var(--font-display);
-    font-size: 1.5rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.25;
-    color: var(--ui-text-highlighted);
-  }
-  .article p,
-  .article li {
-    color: var(--ui-text-toned);
-    line-height: 1.75;
-  }
-  .article p + p,
-  .article h2 + p,
-  .article ul {
-    margin-top: 0.875rem;
-  }
-  .article ul {
-    list-style: disc;
-    padding-left: 1.25rem;
-  }
-  .article li + li {
-    margin-top: 0.375rem;
-  }
-  .article strong {
-    color: var(--ui-text-highlighted);
+  .eyebrow {
+    font-size: 0.8125rem;
     font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ui-color-primary-600);
   }
-  .article a {
-    color: var(--ui-primary);
-    text-decoration: underline;
-    text-underline-offset: 3px;
+  .dark .eyebrow {
+    color: var(--ui-color-primary-400);
+  }
+}
+
+/*
+ * Motion. Only transform, opacity and filter are animated, so nothing shifts the
+ * layout. People who prefer reduced motion get the final state immediately.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  :root {
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes cf-focus-in {
+    from {
+      opacity: 0;
+      filter: blur(14px);
+      transform: translateY(14px) scale(0.985);
+    }
+    to {
+      opacity: 1;
+      filter: blur(0);
+      transform: none;
+    }
+  }
+
+  @keyframes cf-fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes cf-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes cf-pop {
+    0% {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+    60% {
+      opacity: 1;
+      transform: scale(1.08);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  /* Viewfinder corners close in and lock, like a camera finding focus. */
+  @keyframes cf-lock {
+    0% {
+      opacity: 0;
+      transform: scale(1.06);
+    }
+    65% {
+      opacity: 1;
+      transform: scale(0.985);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes cf-scan {
+    0% {
+      opacity: 0;
+      transform: translateY(-100%);
+    }
+    20%,
+    80% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(260%);
+    }
+  }
+
+  .motion-focus-in {
+    animation: cf-focus-in 0.9s var(--ease-out) var(--delay, 0s) both;
+  }
+  .motion-fade-up {
+    animation: cf-fade-up 0.6s var(--ease-out) var(--delay, 0s) both;
+  }
+  .motion-fade-in {
+    animation: cf-fade-in 0.3s ease-out var(--delay, 0s) both;
+  }
+  .motion-pop {
+    animation: cf-pop 0.5s var(--ease-out) var(--delay, 0s) both;
+  }
+  .motion-lock {
+    animation: cf-lock 0.9s var(--ease-out) var(--delay, 0s) both;
+  }
+
+  /* A soft scan line sweeps once over the upload area, and keeps sweeping while a file is read. */
+  .motion-scan::after {
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    height: 40%;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      color-mix(in oklab, var(--ui-primary) 10%, transparent),
+      transparent
+    );
+    animation: cf-scan 1.6s ease-in-out var(--scan-delay, 0.9s) both;
+  }
+  .motion-scan.is-scanning::after {
+    animation: cf-scan 1.3s ease-in-out 0s infinite;
+  }
+
+  .motion-lift {
+    transition:
+      transform 0.25s var(--ease-out),
+      box-shadow 0.25s var(--ease-out);
+  }
+  .motion-lift:hover {
+    transform: translateY(-3px);
+    box-shadow:
+      0 1px 2px rgb(28 25 23 / 0.04),
+      0 16px 32px -16px rgb(28 25 23 / 0.18);
+  }
+
+  /* Sections fade up as they scroll into view (no JavaScript; skipped where unsupported). */
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: cf-fade-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+  }
+
+  /* Page transitions: a quick fade out, then the next page slides up into place. */
+  .page-leave-active {
+    transition:
+      opacity 0.12s ease-in,
+      transform 0.12s ease-in;
+  }
+  .page-enter-active {
+    transition:
+      opacity 0.24s ease-out,
+      transform 0.24s var(--ease-out);
+  }
+  .page-leave-to {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  .page-enter-from {
+    opacity: 0;
+    transform: translateY(10px);
   }
 }
 

@@ -36,6 +36,8 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
 
   app: {
+    // Quick fade between pages; styles live in assets/css/main.css (skipped for reduced motion).
+    pageTransition: { name: 'page', mode: 'out-in' },
     head: {
       htmlAttrs: { lang: 'en' },
       // Standard favicon set: ICO for legacy browsers, SVG for modern ones,

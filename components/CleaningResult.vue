@@ -26,10 +26,11 @@ const summary = computed(() => {
 </script>
 
 <template>
-  <div class="space-y-6">
+  <div class="motion-fade-up space-y-6">
     <div class="flex items-start gap-3.5">
       <span
-        class="flex size-11 shrink-0 items-center justify-center rounded-xl"
+        class="motion-pop flex size-11 shrink-0 items-center justify-center rounded-xl"
+        style="--delay: 150ms"
         :class="fullyClean ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning'"
       >
         <UIcon :name="fullyClean ? 'i-lucide-shield-check' : 'i-lucide-shield-alert'" class="size-6" />

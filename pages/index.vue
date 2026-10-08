@@ -22,6 +22,8 @@ const toast = useToast()
 const workspace = ref<HTMLElement | null>(null)
 const dropzone = ref<{ focus: () => void } | null>(null)
 const showOriginal = ref(false)
+/** The staggered entrance plays on first load only; later the upload card appears immediately. */
+const introPlayed = ref(false)
 
 /** The two-column workspace stays mounted from review to result, so nothing jumps between steps. */
 const inWorkspace = computed(() => phase.value === 'ready' || phase.value === 'cleaning' || phase.value === 'done')
@@ -42,6 +44,7 @@ const HEADER_OFFSET = 80
  * the reader), and never animates. On small screens the sticky bar shows the next action.
  */
 watch(phase, async (next, previous) => {
+  introPlayed.value = true
   if (next === 'done') showOriginal.value = false
   await nextTick()
   if (next === 'idle') {
@@ -105,10 +108,12 @@ onBeforeUnmount(() => {
 
     <section class="pt-12 pb-10 text-center sm:pt-20 sm:pb-14">
       <h1 class="mx-auto max-w-3xl font-display text-[2.5rem] leading-[1.05] text-highlighted sm:text-6xl lg:text-7xl">
-        <span class="block">Your photos.</span>
-        <span class="block text-primary-600 dark:text-primary-400">Your privacy.</span>
+        <span class="motion-focus-in block">Your photos.</span>
+        <span class="motion-focus-in block text-primary-600 dark:text-primary-400" style="--delay: 140ms">
+          Your privacy.
+        </span>
       </h1>
-      <p class="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-muted">
+      <p class="motion-fade-up mx-auto mt-5 max-w-xl text-lg leading-relaxed text-muted" style="--delay: 320ms">
         Clean unwanted image metadata before you share. Process your photos directly on your device with no uploads or
         cloud storage.
       </p>
@@ -119,6 +124,7 @@ onBeforeUnmount(() => {
         v-if="phase === 'idle' || phase === 'loading'"
         ref="dropzone"
         :loading="phase === 'loading'"
+        :intro-delay="introPlayed ? 0 : 420"
         @select="selectFile"
       />
 
@@ -128,7 +134,7 @@ onBeforeUnmount(() => {
         v-else-if="inWorkspace && image && analysis"
         class="grid gap-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:items-start"
       >
-        <div class="card space-y-6 p-4 sm:p-6 lg:sticky lg:top-24">
+        <div class="card motion-fade-up space-y-6 p-4 sm:p-6 lg:sticky lg:top-24">
           <div class="flex min-h-9 items-center justify-between gap-3">
             <h2 class="text-lg font-semibold text-highlighted" tabindex="-1" data-autofocus="ready">
               {{ isDone ? 'Preview' : 'Review your image' }}
@@ -154,7 +160,7 @@ onBeforeUnmount(() => {
           <ImageInfo :image="image" />
         </div>
 
-        <div class="card p-4 sm:p-6">
+        <div class="card motion-fade-up p-4 sm:p-6" style="--delay: 60ms">
           <CleaningResult
             v-if="isDone && result"
             :image="image"
