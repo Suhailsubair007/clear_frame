@@ -6,7 +6,7 @@
       <div class="flex items-center gap-2.5">
         <AppLogo class="size-6" />
         <p>
-          <span class="font-semibold text-highlighted">ClearFrame</span>
+          <span class="font-semibold text-highlighted">Clear Frame</span>
           <span aria-hidden="true"> · </span>
           Your photos. Your privacy.
         </p>

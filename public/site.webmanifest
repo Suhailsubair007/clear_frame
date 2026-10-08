@@ -1,6 +1,6 @@
 {
-  "name": "ClearFrame",
-  "short_name": "ClearFrame",
+  "name": "Clear Frame",
+  "short_name": "Clear Frame",
   "description": "Clean your images privately before you share them.",
   "icons": [
     { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },

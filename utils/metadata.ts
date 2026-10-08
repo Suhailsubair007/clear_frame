@@ -499,7 +499,7 @@ export function compareMetadata(before: MetadataAnalysis, after: MetadataAnalysi
       outcomes.push({
         ...base,
         outcome: 'not-removed',
-        note: 'This metadata type cannot currently be removed by ClearFrame.',
+        note: 'This metadata type cannot currently be removed by Clear Frame.',
       })
     }
   }

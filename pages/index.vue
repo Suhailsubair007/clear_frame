@@ -174,7 +174,7 @@ onBeforeUnmount(() => {
             <MetadataSummary :categories="analysis.categories" />
             <ProvenanceNotice v-if="aiFound" :provenance="analysis.provenance" />
             <p v-if="analysis.parseFailed" class="text-sm text-muted">
-              Some details couldn’t be read, but ClearFrame can still remove the metadata blocks it found.
+              Some details couldn’t be read, but Clear Frame can still remove the metadata blocks it found.
             </p>
             <MetadataDetails :groups="analysis.groups" />
             <QualitySelector v-model="mode" :available="availableModes" :disabled="phase === 'cleaning'" />

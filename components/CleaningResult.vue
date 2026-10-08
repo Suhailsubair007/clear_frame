@@ -18,7 +18,7 @@ const stats = computed(() => [
 
 const summary = computed(() => {
   const { removedCount, fieldsRemoved, mode } = props.result
-  if (removedCount === 0) return 'There was no metadata to remove. ClearFrame still made a fresh, verified copy.'
+  if (removedCount === 0) return 'There was no metadata to remove. Clear Frame still made a fresh, verified copy.'
   const fields = fieldsRemoved ? ` (${fieldsRemoved} fields)` : ''
   const quality = mode === 'original' ? 'Pixels are untouched.' : 'The image was re-saved at the quality you chose.'
   return `Removed ${removedCount} kind${removedCount === 1 ? '' : 's'} of metadata${fields}. ${quality}`
@@ -113,7 +113,7 @@ const summary = computed(() => {
           >Invisible watermarks and Content Credentials stored online.</strong
         >
         Some AI tools hide signals in the pixels themselves or keep provenance records on their own servers. This
-        metadata type cannot currently be removed by ClearFrame.
+        metadata type cannot currently be removed by Clear Frame.
       </p>
       <p class="mt-2 text-toned">
         Removing metadata does not guarantee that Instagram or other platforms will remove an AI-generated or AI-edited

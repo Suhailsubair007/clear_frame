@@ -1,4 +1,4 @@
-/** Image container formats ClearFrame can inspect and clean. */
+/** Image container formats Clear Frame can inspect and clean. */
 export type ImageFormat = 'jpeg' | 'png' | 'webp'
 
 /** Formats we can recognise but deliberately do not process. */

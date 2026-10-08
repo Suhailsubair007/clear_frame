@@ -54,7 +54,7 @@
       0 8px 24px -12px rgb(28 25 23 / 0.08);
   }
 
-  /* Camera viewfinder corners: the ClearFrame motif. */
+  /* Camera viewfinder corners: the Clear Frame motif. */
   .viewfinder {
     --vf-color: var(--ui-border-accented);
     --vf-size: 1.5rem;

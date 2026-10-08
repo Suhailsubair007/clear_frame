@@ -16,7 +16,7 @@ const findings = computed(() => describeProvenance(props.provenance))
       <li v-for="finding in findings" :key="finding">{{ finding }}</li>
     </ul>
     <p class="mt-3 text-toned">
-      ClearFrame can remove supported embedded metadata that may contain information about how an image was created or
+      Clear Frame can remove supported embedded metadata that may contain information about how an image was created or
       edited, including information associated with AI tools where technically supported.
     </p>
     <p class="mt-2 text-toned">

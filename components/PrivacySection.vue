@@ -8,7 +8,7 @@ const PROMISES = ['No image storage', 'No account required', 'No cloud processin
       <div>
         <h2 id="private-heading" class="font-display text-3xl text-highlighted sm:text-4xl">Private by design</h2>
         <p class="mt-3 max-w-md leading-relaxed text-muted">
-          ClearFrame processes your images directly in your browser. Your images are not uploaded to a ClearFrame
+          Clear Frame processes your images directly in your browser. Your images are not uploaded to a Clear Frame
           server.
         </p>
       </div>

@@ -1,8 +1,8 @@
-# ClearFrame
+# Clear Frame
 
 > Your photos. Your privacy.
 
-ClearFrame is a privacy-first image metadata cleaner. It shows what is hidden inside a photo — location, camera, dates, software, AI/provenance data — removes it, verifies the result, and hands back a clean copy. Everything happens in your browser. **Your photos never leave your device.**
+Clear Frame is a privacy-first image metadata cleaner. It shows what is hidden inside a photo — location, camera, dates, software, AI/provenance data — removes it, verifies the result, and hands back a clean copy. Everything happens in your browser. **Your photos never leave your device.**
 
 ## Overview
 
@@ -66,9 +66,9 @@ In _Balanced_ / _Smaller file_ modes the rotation is applied to the pixels and t
 
 ## Metadata limitations
 
-- **AI labels.** ClearFrame can remove supported embedded metadata that may contain information about how an image was created or edited, including information associated with AI tools where technically supported. **Removing metadata does not guarantee that Instagram or other platforms will remove an AI-generated or AI-edited label.** Platforms may use independent detection or provenance systems.
-- **Invisible watermarks** (for example SynthID, Digimarc, TrustMark) live in the pixels, and some Content Credentials are stored online and found by fingerprint. ClearFrame cannot detect or remove these, and says so in the app.
-- C2PA manifests are detected and removed as blocks; ClearFrame does not validate their signatures.
+- **AI labels.** Clear Frame can remove supported embedded metadata that may contain information about how an image was created or edited, including information associated with AI tools where technically supported. **Removing metadata does not guarantee that Instagram or other platforms will remove an AI-generated or AI-edited label.** Platforms may use independent detection or provenance systems.
+- **Invisible watermarks** (for example SynthID, Digimarc, TrustMark) live in the pixels, and some Content Credentials are stored online and found by fingerprint. Clear Frame cannot detect or remove these, and says so in the app.
+- C2PA manifests are detected and removed as blocks; Clear Frame does not validate their signatures.
 - Data appended after the main image — Motion Photo video, HDR gain maps, MPF secondary images — is removed, so those extras are lost.
 - Re-encoding converts to sRGB; wide-gamut (Display P3) colours may look slightly less vivid. _Original quality_ preserves them exactly.
 

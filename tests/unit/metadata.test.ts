@@ -106,7 +106,7 @@ describe('compareMetadata', () => {
     const outcomes = compareMetadata(analysis, analysis)
     expect(outcomes.find((outcome) => outcome.id === 'gps')).toMatchObject({
       outcome: 'not-removed',
-      note: 'This metadata type cannot currently be removed by ClearFrame.',
+      note: 'This metadata type cannot currently be removed by Clear Frame.',
     })
   })
 })

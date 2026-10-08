@@ -30,7 +30,7 @@ export class ClearFrameError extends Error {
   }
 }
 
-const GENERIC_IMAGE_PROBLEM = "The file may be corrupted or use a format that ClearFrame doesn't currently support."
+const GENERIC_IMAGE_PROBLEM = "The file may be corrupted or use a format that Clear Frame doesn't currently support."
 
 const ERROR_COPY: Record<ClearFrameErrorCode, Omit<UserFacingError, 'code'>> = {
   'empty-file': {
@@ -39,11 +39,11 @@ const ERROR_COPY: Record<ClearFrameErrorCode, Omit<UserFacingError, 'code'>> = {
   },
   'too-large': {
     title: 'This image is too large.',
-    description: 'ClearFrame accepts images up to 50 MB so your browser stays responsive.',
+    description: 'Clear Frame accepts images up to 50 MB so your browser stays responsive.',
   },
   'unsupported-type': {
     title: "This file type isn't supported.",
-    description: 'ClearFrame works with JPG, PNG and WebP images.',
+    description: 'Clear Frame works with JPG, PNG and WebP images.',
   },
   'heic-unsupported': {
     title: "HEIC photos aren't supported yet.",
@@ -82,7 +82,7 @@ const ERROR_COPY: Record<ClearFrameErrorCode, Omit<UserFacingError, 'code'>> = {
   'verification-failed': {
     title: "We couldn't verify the cleaned image.",
     description:
-      'The cleaned file did not open correctly, so ClearFrame did not offer it for download. Try again or try another image.',
+      'The cleaned file did not open correctly, so Clear Frame did not offer it for download. Try again or try another image.',
   },
   'download-failed': {
     title: "The download didn't start.",

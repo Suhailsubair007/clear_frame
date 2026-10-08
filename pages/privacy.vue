@@ -1,7 +1,7 @@
 <script setup lang="ts">
 useSeoMeta({
   title: 'Privacy',
-  description: 'ClearFrame processes images locally in your browser. No uploads, no image storage, no accounts.',
+  description: 'Clear Frame processes images locally in your browser. No uploads, no image storage, no accounts.',
 })
 
 const PROMISES = [
@@ -31,7 +31,7 @@ const LIMITS = [
       Your photos never leave your device.
     </h1>
     <p class="motion-fade-up mt-5 text-lg leading-relaxed text-muted" style="--delay: 160ms">
-      Everything happens in your browser. ClearFrame does not upload your images to any server.
+      Everything happens in your browser. Clear Frame does not upload your images to any server.
     </p>
 
     <ul class="motion-fade-up mt-12 grid gap-3 sm:grid-cols-2" style="--delay: 240ms">

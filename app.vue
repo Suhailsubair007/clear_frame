@@ -1,20 +1,20 @@
 <script setup lang="ts">
-const DEFAULT_TITLE = 'ClearFrame — Private Image Metadata Cleaner'
+const DEFAULT_TITLE = 'Clear Frame — Private Image Metadata Cleaner'
 const DESCRIPTION =
   'Remove supported image metadata privately in your browser. Clean EXIF, GPS, editing and other metadata before sharing your photos.'
 
 useHead({
-  titleTemplate: (title) => (title ? `${title} · ClearFrame` : DEFAULT_TITLE),
+  titleTemplate: (title) => (title ? `${title} · Clear Frame` : DEFAULT_TITLE),
 })
 
 useSeoMeta({
   description: DESCRIPTION,
-  ogTitle: 'ClearFrame — Your photos. Your privacy.',
+  ogTitle: 'Clear Frame — Your photos. Your privacy.',
   ogDescription: 'Clean your images privately before you share them.',
   ogType: 'website',
-  ogSiteName: 'ClearFrame',
+  ogSiteName: 'Clear Frame',
   twitterCard: 'summary',
-  twitterTitle: 'ClearFrame — Your photos. Your privacy.',
+  twitterTitle: 'Clear Frame — Your photos. Your privacy.',
   twitterDescription: 'Clean your images privately before you share them.',
 })
 </script>
