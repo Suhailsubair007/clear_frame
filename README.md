@@ -74,7 +74,7 @@ In _Balanced_ / _Smaller file_ modes the rotation is applied to the pixels and t
 
 ## Tech stack
 
-Nuxt 3 · Vue 3 (`<script setup lang="ts">`) · TypeScript (strict) · Nuxt UI 3 · Tailwind CSS 4 · ExifReader · Vitest · Playwright · ESLint · Prettier.
+Nuxt 3 · Vue 3 (`<script setup lang="ts">`) · TypeScript (strict) · Nuxt UI 3 · Tailwind CSS 4 · ExifReader · Vitest · Playwright · ESLint · Prettier. Fonts: Plus Jakarta Sans (headings) and Geist (text), self-hosted via `@nuxt/fonts`.
 
 Nuxt UI v4 requires Nuxt 4, so this project uses Nuxt UI 3.3 to stay on Nuxt 3. `types/nuxt-schema.d.ts` restores a route-rule type that the mixed `@nuxt/schema` versions hide.
 
@@ -97,6 +97,7 @@ utils/
   errors.ts        User-facing error copy
 workers/           Off-main-thread re-encoding (OffscreenCanvas)
 pages/             /, /about, /privacy
+assets/icons/      Logo sources for the favicon, Apple touch and maskable icons
 tests/unit         Vitest
 tests/e2e          Playwright
 tests/helpers      Synthetic fixture builders (no real photos)
@@ -117,6 +118,12 @@ Sample images with fictional metadata (GPS, camera, AI markers) can be written t
 
 ```bash
 npm run fixtures
+```
+
+Favicons and app icons are generated from the SVG sources in `assets/icons/` (rendered with Playwright's Chromium):
+
+```bash
+npm run icons
 ```
 
 ## Production build
