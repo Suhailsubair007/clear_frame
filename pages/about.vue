@@ -9,7 +9,7 @@ useSeoMeta({
 <template>
   <article class="article mx-auto max-w-2xl px-4 pt-14 sm:px-6 sm:pt-20">
     <p class="text-sm font-semibold tracking-wider text-primary uppercase">About</p>
-    <h1 class="mt-3 font-display text-5xl leading-tight text-highlighted">
+    <h1 class="mt-3 font-display text-4xl leading-tight sm:text-5xl text-highlighted">
       ClearFrame was built to make image privacy simple.
     </h1>
 

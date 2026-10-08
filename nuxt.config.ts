@@ -38,9 +38,11 @@ export default defineNuxtConfig({
   app: {
     head: {
       htmlAttrs: { lang: 'en' },
+      // Standard favicon set: ICO for legacy browsers, SVG for modern ones,
+      // Apple touch icon for iOS home screens, manifest icons for Android/PWA.
       link: [
+        { rel: 'icon', href: '/favicon.ico', sizes: '32x32' },
         { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
-        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32.png' },
         { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
         { rel: 'manifest', href: '/site.webmanifest' },
       ],
@@ -58,6 +60,9 @@ export default defineNuxtConfig({
 
   /** Icons are bundled at build time; no runtime requests to an icon CDN. */
   icon: {
+    // Inline SVG instead of CSS masks: CSS mode injects a stylesheet at runtime that
+    // declares Tailwind's `components` layer before `base`, breaking the cascade.
+    mode: 'svg',
     provider: 'none',
     serverBundle: 'local',
     clientBundle: {
@@ -77,9 +82,16 @@ export default defineNuxtConfig({
     },
   },
 
-  /** Fonts are downloaded at build time and served from this site. */
+  /**
+   * Fonts are downloaded at build time and served from this site.
+   * Both are variable fonts, so they're declared with weight ranges; fixed
+   * weights would make browsers render the variable file at its default weight.
+   */
   fonts: {
-    defaults: { weights: [400, 500, 600], styles: ['normal', 'italic'] },
+    families: [
+      { name: 'Geist', weights: ['100 900'], styles: ['normal'] },
+      { name: 'Plus Jakarta Sans', weights: ['200 800'], styles: ['normal'] },
+    ],
   },
 
   routeRules: {

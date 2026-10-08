@@ -10,7 +10,7 @@
       <nav aria-label="Main" class="flex items-center gap-0.5">
         <UButton to="/about" variant="ghost" color="neutral" label="About" />
         <UButton to="/privacy" variant="ghost" color="neutral" label="Privacy" />
-        <UColorModeButton />
+        <ColorModeToggle />
       </nav>
     </div>
   </header>

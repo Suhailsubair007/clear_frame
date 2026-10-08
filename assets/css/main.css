@@ -3,7 +3,7 @@
 
 @theme static {
   --font-sans: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-display: 'Instrument Serif', ui-serif, Georgia, serif;
+  --font-display: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
 
 @layer base {
@@ -36,6 +36,12 @@
 }
 
 @layer components {
+  /* Headings: bold, tightly tracked geometric sans. */
+  .font-display {
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+
   .card {
     background-color: var(--cf-card);
     border: 1px solid var(--ui-border);
@@ -80,8 +86,10 @@
   .article h2 {
     margin-top: 2.5rem;
     font-family: var(--font-display);
-    font-size: 1.875rem;
-    line-height: 1.2;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
     color: var(--ui-text-highlighted);
   }
   .article p,

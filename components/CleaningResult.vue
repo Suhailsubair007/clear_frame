@@ -36,7 +36,7 @@ const summary = computed(() => {
           <UIcon :name="fullyClean ? 'i-lucide-shield-check' : 'i-lucide-shield-alert'" class="size-6" />
         </span>
         <div>
-          <h2 class="font-display text-3xl leading-tight text-highlighted sm:text-4xl" tabindex="-1" data-autofocus>
+          <h2 class="font-display text-2xl leading-tight text-highlighted sm:text-3xl" tabindex="-1" data-autofocus>
             {{ fullyClean ? 'Your image is clean and ready to share.' : 'Your image was cleaned, with exceptions.' }}
           </h2>
           <p class="mt-2 text-muted">{{ summary }}</p>

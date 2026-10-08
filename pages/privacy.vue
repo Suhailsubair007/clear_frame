@@ -8,7 +8,9 @@ useSeoMeta({
 <template>
   <article class="article mx-auto max-w-2xl px-4 pt-14 sm:px-6 sm:pt-20">
     <p class="text-sm font-semibold tracking-wider text-primary uppercase">Privacy</p>
-    <h1 class="mt-3 font-display text-5xl leading-tight text-highlighted">Your photos never leave your device.</h1>
+    <h1 class="mt-3 font-display text-4xl leading-tight sm:text-5xl text-highlighted">
+      Your photos never leave your device.
+    </h1>
 
     <p class="mt-6 text-lg">
       ClearFrame is designed so that it never needs to see your images. Here is exactly what happens — and what doesn’t.

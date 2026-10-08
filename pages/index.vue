@@ -88,16 +88,17 @@ onBeforeUnmount(() => {
 
     <section class="text-center" :class="compactHero ? 'pt-10 pb-8' : 'pt-12 pb-10 sm:pt-20 sm:pb-14'">
       <p
-        class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3.5 py-1.5 text-sm font-medium text-primary-700 dark:text-primary-300"
+        class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3.5 py-1.5 text-xs font-medium sm:text-sm text-primary-700 dark:text-primary-300"
       >
         <UIcon name="i-lucide-lock" class="size-3.5" aria-hidden="true" />
         Processed locally. Your photos never leave your device.
       </p>
       <h1
-        class="mx-auto mt-6 max-w-3xl font-display leading-[1.05] tracking-tight text-highlighted transition-all"
-        :class="compactHero ? 'text-4xl sm:text-5xl' : 'text-5xl sm:text-7xl'"
+        class="mx-auto mt-6 max-w-3xl font-display leading-[1.05] text-highlighted transition-all"
+        :class="compactHero ? 'text-4xl sm:text-5xl' : 'text-[2.5rem] sm:text-6xl lg:text-7xl'"
       >
-        Your photos. <em class="text-primary">Your privacy.</em>
+        <span class="block">Your photos.</span>
+        <span class="block text-primary-600 dark:text-primary-400">Your privacy.</span>
       </h1>
       <p v-if="!compactHero" class="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-muted">
         Clean unwanted image metadata before you share. Process your photos directly on your device with no uploads or
