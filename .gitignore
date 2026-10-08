@@ -35,3 +35,6 @@ playwright/.cache
 # Never commit personal photos. Test fixtures are generated in tests/fixtures.
 *.heic
 *.HEIC
+
+# Cloudflare Wrangler local state
+.wrangler

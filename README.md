@@ -137,8 +137,32 @@ npm run generate                 # fully static output in .output/public
 
 ## Deployment
 
-- **Vercel / Netlify:** import the repository; Nuxt is detected automatically. Security headers from `nuxt.config.ts` are applied by the Nitro preset.
-- **Any static host:** run `npm run generate` and upload `.output/public`. Add the security headers from `nuxt.config.ts` in your host's configuration if it does not read Nitro's output.
+### Cloudflare Pages (free, recommended)
+
+The site is fully static, so it runs on Cloudflare's free plan with no server code. `npm run build:cloudflare` writes the site to `dist/`, including a `_headers` file with the security headers (Content Security Policy etc.).
+
+**Option A — connect the GitHub repository** (deploys automatically on every push):
+
+1. Cloudflare dashboard → **Workers & Pages** → **Create** → **Pages** → **Connect to Git**, and pick this repository.
+2. Build settings:
+   - Framework preset: **None**
+   - Build command: `npm run build:cloudflare`
+   - Build output directory: `dist`
+3. **Save and Deploy.** Node 22 is picked up from `.node-version`.
+
+**Option B — deploy from your computer:**
+
+```bash
+npx wrangler@4 login          # once; opens the browser
+npm run deploy:cloudflare     # builds and uploads to the "clearframe" Pages project
+```
+
+Leave Cloudflare **Web Analytics** and **Rocket Loader** off for this site: they inject third-party scripts, which the privacy policy and Content Security Policy don't allow.
+
+### Other hosts
+
+- **Vercel / Netlify:** import the repository; Nuxt is detected automatically and the security headers from `nuxt.config.ts` are applied by the Nitro preset.
+- **Any static host:** run `npm run generate` and upload `.output/public`, then add the headers from `nuxt.config.ts` in the host's configuration.
 
 ## Testing
 

@@ -9,6 +9,8 @@
     "dev": "nuxt dev",
     "build": "nuxt build",
     "generate": "nuxt generate",
+    "build:cloudflare": "nuxt generate --preset cloudflare_pages_static",
+    "deploy:cloudflare": "npm run build:cloudflare && npx wrangler@4 pages deploy dist --project-name clearframe",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "typecheck": "nuxt typecheck",
