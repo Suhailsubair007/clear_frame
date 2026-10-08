@@ -4,8 +4,29 @@ import type { SelectedImage } from '~/types/image'
 import { formatBytes } from '~/utils/file'
 
 /** Result panel. Shown in the same column as the metadata summary so the layout doesn't jump. */
-const props = defineProps<{ image: SelectedImage; result: CleanedImage; canShare: boolean }>()
+const props = defineProps<{ image: SelectedImage; result: CleanedImage; canShare: boolean; preferShare: boolean }>()
 const emit = defineEmits<{ download: []; share: []; reset: [] }>()
+
+type Action = { key: 'download' | 'share'; label: string; icon: string }
+
+/** On phones, sharing (to Instagram, WhatsApp, Photos…) leads; on computers, downloading does. */
+const actions = computed<Action[]>(() => {
+  const download: Action = { key: 'download', label: 'Download clean image', icon: 'i-lucide-download' }
+  if (!props.canShare) return [download]
+  const share: Action = {
+    key: 'share',
+    label: props.preferShare ? 'Share to Instagram & more' : 'Share',
+    icon: 'i-lucide-share',
+  }
+  return props.preferShare ? [share, download] : [download, share]
+})
+const primary = computed(() => actions.value[0] as Action)
+const secondary = computed(() => actions.value[1])
+
+function run(action: Action) {
+  if (action.key === 'share') emit('share')
+  else emit('download')
+}
 
 const fullyClean = computed(() => props.result.outcomes.every((outcome) => outcome.outcome !== 'not-removed'))
 
@@ -47,17 +68,20 @@ const summary = computed(() => {
     </div>
 
     <div class="grid gap-2">
-      <UButton size="xl" icon="i-lucide-download" label="Download clean image" block @click="emit('download')" />
-      <div class="grid gap-2" :class="{ 'sm:grid-cols-2': canShare }">
+      <UButton size="xl" :icon="primary.icon" :label="primary.label" block @click="run(primary)" />
+      <p v-if="canShare && preferShare" class="-mt-0.5 mb-1 text-center text-xs text-muted">
+        Opens your phone’s share sheet — choose Instagram (Story, Post or Message), WhatsApp, or Save Image.
+      </p>
+      <div class="grid gap-2" :class="{ 'sm:grid-cols-2': secondary }">
         <UButton
-          v-if="canShare"
+          v-if="secondary"
           size="lg"
           color="neutral"
           variant="subtle"
-          icon="i-lucide-share"
-          label="Share or save to Photos"
+          :icon="secondary.icon"
+          :label="secondary.label"
           block
-          @click="emit('share')"
+          @click="run(secondary)"
         />
         <UButton
           size="lg"

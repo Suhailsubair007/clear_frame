@@ -42,10 +42,12 @@ export function useFileDownload() {
     }
   }
 
-  /** True on touch devices whose share sheet accepts files (e.g. "Save Image" on iPhone). */
+  /**
+   * True when the browser's share sheet accepts image files. On phones that sheet
+   * lists Instagram (Story, Post, Message), WhatsApp, Messages and "Save Image".
+   */
   function canShareFile(blob: Blob, fileName: string): boolean {
     if (typeof navigator === 'undefined' || typeof navigator.canShare !== 'function') return false
-    if (!window.matchMedia('(pointer: coarse)').matches) return false
     try {
       return navigator.canShare({ files: [new File([blob], fileName, { type: blob.type })] })
     } catch {
@@ -53,7 +55,10 @@ export function useFileDownload() {
     }
   }
 
-  /** Opens the device share sheet. Resolves false when the user cancels. */
+  /**
+   * Opens the device share sheet with only the image attached (no text), which is
+   * what Instagram's share targets expect. Resolves false when the user cancels.
+   */
   async function share(blob: Blob, fileName: string): Promise<boolean> {
     try {
       await navigator.share({ files: [new File([blob], fileName, { type: blob.type })] })
@@ -64,5 +69,10 @@ export function useFileDownload() {
     }
   }
 
-  return { reserveFileName, download, canShareFile, share }
+  /** Phones and tablets, where sharing is the natural way to post or save a photo. */
+  function prefersSharing(): boolean {
+    return typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches
+  }
+
+  return { reserveFileName, download, canShareFile, prefersSharing, share }
 }

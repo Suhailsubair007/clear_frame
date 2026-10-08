@@ -54,3 +54,52 @@ describe('useFileDownload', () => {
     expect(useFileDownload().reserveFileName('beach.jpg', 'jpeg')).toBe('beach-clean-3.jpg')
   })
 })
+
+describe('sharing', () => {
+  const blob = new Blob([new Uint8Array([1, 2, 3])], { type: 'image/jpeg' })
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  it('reports no support when the browser cannot share files', () => {
+    vi.stubGlobal('navigator', {})
+    expect(useFileDownload().canShareFile(blob, 'a-clean.jpg')).toBe(false)
+  })
+
+  it('checks support with the real file', () => {
+    const canShare = vi.fn(() => true)
+    vi.stubGlobal('navigator', { canShare })
+    expect(useFileDownload().canShareFile(blob, 'a-clean.jpg')).toBe(true)
+    const [{ files }] = canShare.mock.calls[0] as unknown as [{ files: File[] }]
+    expect(files[0]?.name).toBe('a-clean.jpg')
+  })
+
+  it('shares only the cleaned image file, with its name and type', async () => {
+    const shareSpy = vi.fn(async (_data: ShareData) => {})
+    vi.stubGlobal('navigator', { share: shareSpy })
+
+    await expect(useFileDownload().share(blob, 'IMG_1234-clean.jpg')).resolves.toBe(true)
+    const data = shareSpy.mock.calls[0]?.[0]
+    expect(Object.keys(data ?? {})).toEqual(['files'])
+    expect(data?.files?.[0]).toMatchObject({ name: 'IMG_1234-clean.jpg', type: 'image/jpeg', size: 3 })
+  })
+
+  it('treats a cancelled share sheet as a normal outcome', async () => {
+    vi.stubGlobal('navigator', {
+      share: async () => {
+        throw new DOMException('Share canceled', 'AbortError')
+      },
+    })
+    await expect(useFileDownload().share(blob, 'a-clean.jpg')).resolves.toBe(false)
+  })
+
+  it('reports real share failures without technical detail', async () => {
+    vi.stubGlobal('navigator', {
+      share: async () => {
+        throw new DOMException('Permission denied', 'NotAllowedError')
+      },
+    })
+    await expect(useFileDownload().share(blob, 'a-clean.jpg')).rejects.toMatchObject({ code: 'download-failed' })
+  })
+})

@@ -16,12 +16,14 @@ const {
   clean,
   reset,
 } = useImageCleaner()
-const { download, share, canShareFile } = useFileDownload()
+const { download, share, canShareFile, prefersSharing } = useFileDownload()
 const toast = useToast()
 
 const workspace = ref<HTMLElement | null>(null)
 const dropzone = ref<{ focus: () => void } | null>(null)
 const showOriginal = ref(false)
+/** Set after mount: touch devices lead with Share (Instagram, WhatsApp, Save Image). */
+const preferShare = ref(false)
 /** The staggered entrance plays on first load only; later the upload card appears immediately. */
 const introPlayed = ref(false)
 
@@ -92,6 +94,7 @@ function onWindowDrop(event: DragEvent) {
 }
 
 onMounted(() => {
+  preferShare.value = prefersSharing()
   window.addEventListener('dragover', onWindowDragOver)
   window.addEventListener('drop', onWindowDrop)
 })
@@ -166,6 +169,7 @@ onBeforeUnmount(() => {
             :image="image"
             :result="result"
             :can-share="canShare"
+            :prefer-share="preferShare"
             @download="onDownload"
             @share="onShare"
             @reset="reset"
@@ -199,14 +203,18 @@ onBeforeUnmount(() => {
       v-if="inWorkspace"
       class="fixed inset-x-0 bottom-0 z-20 border-t border-default bg-(--cf-page)/90 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur-md lg:hidden"
     >
-      <UButton
-        v-if="isDone"
-        size="xl"
-        block
-        icon="i-lucide-download"
-        label="Download clean image"
-        @click="onDownload"
-      />
+      <div v-if="isDone" class="grid gap-2" :class="{ 'grid-cols-2': canShare }">
+        <UButton
+          size="xl"
+          block
+          icon="i-lucide-download"
+          :color="canShare ? 'neutral' : 'primary'"
+          :variant="canShare ? 'subtle' : 'solid'"
+          :label="canShare ? 'Download' : 'Download clean image'"
+          @click="onDownload"
+        />
+        <UButton v-if="canShare" size="xl" block icon="i-lucide-share" label="Share" @click="onShare" />
+      </div>
       <UButton
         v-else
         size="xl"

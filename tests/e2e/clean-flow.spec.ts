@@ -103,3 +103,32 @@ test('rejects corrupted images', async ({ page }) => {
   })
   await expect(page.getByRole('heading', { name: "We couldn't process this image." })).toBeVisible()
 })
+
+test('shares the cleaned photo through the device share sheet', async ({ page, isMobile }) => {
+  // Simulate a phone share sheet (Instagram, WhatsApp, Save Image…) and record what it receives.
+  await page.addInitScript(() => {
+    const shared: Array<{ name: string; type: string; size: number }> = []
+    Object.assign(window, { __shared: shared })
+    Object.defineProperty(navigator, 'canShare', { value: () => true })
+    Object.defineProperty(navigator, 'share', {
+      value: async (data: ShareData) => {
+        for (const file of data.files ?? []) shared.push({ name: file.name, type: file.type, size: file.size })
+      },
+    })
+  })
+  await page.goto('/')
+  await page.getByLabel('Choose an image to clean').setInputFiles({
+    name: 'IMG_1234.jpg',
+    mimeType: 'image/jpeg',
+    buffer: Buffer.from(buildSamplePhoto()),
+  })
+  await page.getByRole('button', { name: 'Clean image' }).locator('visible=true').click()
+  await expect(page.getByRole('heading', { name: 'Your image is clean and ready to share.' })).toBeVisible()
+
+  // Phones lead with "Share to Instagram & more"; computers keep Download first.
+  const shareButton = page.getByRole('button', { name: isMobile ? 'Share to Instagram & more' : 'Share', exact: true })
+  await shareButton.first().click()
+
+  const shared = await page.evaluate(() => (window as unknown as { __shared: unknown[] }).__shared)
+  expect(shared).toEqual([{ name: 'IMG_1234-clean.jpg', type: 'image/jpeg', size: expect.any(Number) }])
+})
