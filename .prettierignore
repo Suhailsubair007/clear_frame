@@ -1,0 +1,11 @@
+.nuxt
+.output
+node_modules
+coverage
+test-results
+playwright-report
+package-lock.json
+public
+tests/fixtures/*.jpg
+tests/fixtures/*.png
+tests/fixtures/*.webp

@@ -1,0 +1,37 @@
+# Nuxt build output
+.output
+.data
+.nuxt
+.nitro
+.cache
+dist
+
+# Dependencies
+node_modules
+
+# Logs
+logs
+*.log
+
+# Test output
+coverage
+test-results
+playwright-report
+blob-report
+playwright/.cache
+
+# Misc
+.DS_Store
+.fleet
+.idea
+.vercel
+.netlify
+
+# Local env files
+.env
+.env.*
+!.env.example
+
+# Never commit personal photos. Test fixtures are generated in tests/fixtures.
+*.heic
+*.HEIC

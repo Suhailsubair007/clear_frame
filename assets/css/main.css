@@ -1,0 +1,124 @@
+@import 'tailwindcss';
+@import '@nuxt/ui';
+
+@theme static {
+  --font-sans: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Instrument Serif', ui-serif, Georgia, serif;
+}
+
+@layer base {
+  :root,
+  .light {
+    /* Darker secondary text than the defaults, for WCAG AA contrast. */
+    --ui-text-dimmed: var(--ui-color-neutral-500);
+    --ui-text-muted: var(--ui-color-neutral-600);
+    --ui-radius: 0.625rem;
+    --cf-page: var(--ui-color-neutral-50);
+    --cf-card: var(--color-white);
+  }
+
+  .dark {
+    --ui-text-dimmed: var(--ui-color-neutral-400);
+    --ui-text-muted: var(--ui-color-neutral-400);
+    --cf-page: var(--ui-color-neutral-950);
+    --cf-card: var(--ui-color-neutral-900);
+  }
+
+  body {
+    background-color: var(--cf-page);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ui-primary);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .card {
+    background-color: var(--cf-card);
+    border: 1px solid var(--ui-border);
+    border-radius: 1.25rem;
+    box-shadow:
+      0 1px 2px rgb(28 25 23 / 0.04),
+      0 8px 24px -12px rgb(28 25 23 / 0.08);
+  }
+
+  /* Camera viewfinder corners: the ClearFrame motif. */
+  .viewfinder {
+    --vf-color: var(--ui-border-accented);
+    --vf-size: 1.5rem;
+    --vf-weight: 2px;
+    pointer-events: none;
+    position: absolute;
+    inset: 0.875rem;
+    background:
+      linear-gradient(var(--vf-color) 0 0) top left / var(--vf-size) var(--vf-weight),
+      linear-gradient(var(--vf-color) 0 0) top left / var(--vf-weight) var(--vf-size),
+      linear-gradient(var(--vf-color) 0 0) top right / var(--vf-size) var(--vf-weight),
+      linear-gradient(var(--vf-color) 0 0) top right / var(--vf-weight) var(--vf-size),
+      linear-gradient(var(--vf-color) 0 0) bottom left / var(--vf-size) var(--vf-weight),
+      linear-gradient(var(--vf-color) 0 0) bottom left / var(--vf-weight) var(--vf-size),
+      linear-gradient(var(--vf-color) 0 0) bottom right / var(--vf-size) var(--vf-weight),
+      linear-gradient(var(--vf-color) 0 0) bottom right / var(--vf-weight) var(--vf-size);
+    background-repeat: no-repeat;
+    transition: inset 200ms ease;
+  }
+
+  .checkerboard {
+    background-color: var(--ui-bg-muted);
+    background-image: conic-gradient(
+      var(--ui-bg-elevated) 25%,
+      transparent 0 50%,
+      var(--ui-bg-elevated) 0 75%,
+      transparent 0
+    );
+    background-size: 16px 16px;
+  }
+
+  .article h2 {
+    margin-top: 2.5rem;
+    font-family: var(--font-display);
+    font-size: 1.875rem;
+    line-height: 1.2;
+    color: var(--ui-text-highlighted);
+  }
+  .article p,
+  .article li {
+    color: var(--ui-text-toned);
+    line-height: 1.75;
+  }
+  .article p + p,
+  .article h2 + p,
+  .article ul {
+    margin-top: 0.875rem;
+  }
+  .article ul {
+    list-style: disc;
+    padding-left: 1.25rem;
+  }
+  .article li + li {
+    margin-top: 0.375rem;
+  }
+  .article strong {
+    color: var(--ui-text-highlighted);
+    font-weight: 600;
+  }
+  .article a {
+    color: var(--ui-primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
